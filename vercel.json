@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/football-api/(.*)", "destination": "/api/football-proxy?path=$1" }
+  ]
+}
