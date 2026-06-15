@@ -1,5 +1,8 @@
 {
   "name": "polla-proxy",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "vercel": "^54.12.1"
+  }
 }

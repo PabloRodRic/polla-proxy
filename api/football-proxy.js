@@ -22,7 +22,12 @@ export default async function handler(req, res) {
       headers: { 'X-Auth-Token': process.env.FOOTBALL_DATA_API_KEY || '' },
     });
     const data = await upstream.json();
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
+    // Live scores must never be served from the edge cache — a manual sync should
+    // always hit the upstream so it gets the freshest score the API has. Other
+    // endpoints (standings/teams) change slowly, so a short cache spares the
+    // free-tier rate limit (10 req/min).
+    const isLive = apiPath.includes('/matches');
+    res.setHeader('Cache-Control', isLive ? 'no-store' : 's-maxage=60, stale-while-revalidate=30');
     res.status(upstream.status).json(data);
   } catch (err) {
     res.status(502).json({ error: 'Proxy error', detail: err.message });
